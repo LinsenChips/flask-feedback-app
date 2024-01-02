@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+</head>
+<body>
+    <h1>Feedback</h1>
+    
+    <!-- Formular zum Hinzufügen von Einträgen -->
+    <form method="post">
+        <label for="entry">Eintrag:</label>
+        <input type="text" id="entry" name="entry" required>
+        <button type="submit">Senden</button>
+    </form>
+
+    <!-- Liste der Einträge mit Löschfunktion -->
+    <ul>
+        {% for entry in entries %}
+        <li>
+            {{ entry }}
+            <button type="button" onclick="deleteEntry('{{ entry }}')">X</button>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        // JavaScript-Funktion zum Löschen von Einträgen
+        function deleteEntry(entry) {
+            // Sende eine POST-Anfrage an den Server zum Löschen des Eintrags
+            fetch('/delete_entry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'entry=' + encodeURIComponent(entry),
+            }).then(response => {
+                if (response.ok) {
+                    // Aktualisiere die Seite, wenn die Anfrage erfolgreich war
+                    response.json().then(data => {
+                        updateEntryList(data.entries);
+                    });
+                }
+            });
+        }
+    
+        // Funktion zum Aktualisieren der Eintragsliste
+        function updateEntryList(entries) {
+            var ul = document.querySelector('ul');
+            ul.innerHTML = ''; // Leere die aktuelle Liste
+    
+            // Füge die aktualisierten Einträge zur Liste hinzu
+            entries.forEach(function(entry) {
+                var li = document.createElement('li');
+                li.textContent = entry;
+    
+                var button = document.createElement('button');
+                button.textContent = 'X';
+                button.type = 'button';
+                button.onclick = function() {
+                    deleteEntry(entry);
+                };
+    
+                li.appendChild(button);
+                ul.appendChild(li);
+            });
+        }
+    </script>
+    
+    
+     
+</body>
+</html>

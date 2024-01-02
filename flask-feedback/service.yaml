@@ -1,0 +1,29 @@
+# Service-Definition für die Flask-Feedback-App
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-feedback-app  # Name des Services
+spec:
+  selector:
+    app: flask-feedback-app  # Selektor für die Ziel-Pods des Services
+  ports:
+    - protocol: TCP
+      port: 80  # Exponierter Port für den Service
+      targetPort: 5000  # Port, auf dem die Pods lauschen
+  type: LoadBalancer  # Der Service-Typ, kann auch NodePort oder ClusterIP sein, je nach Setup
+
+--- # Trennlinie zwischen den Service-Definitionen
+
+# Service-Definition für MongoDB
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo  # Name des Services für MongoDB
+spec:
+  selector:
+    app: mongo  # Selektor für die Ziel-Pods des Services
+  ports:
+    - protocol: TCP
+      port: 27017  # Exponierter Port für den Service
+      targetPort: 27017  # Port, auf dem die Pods von MongoDB lauschen
+

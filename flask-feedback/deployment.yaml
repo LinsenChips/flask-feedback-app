@@ -1,0 +1,47 @@
+# Definition eines Deployments für die Flask-Feedback-Anwendung
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-feedback-app  # Name des Deployments
+spec:
+  replicas: 2  # Anzahl der Replikate (Pods)
+  selector:
+    matchLabels:
+      app: flask-feedback-app  # Selektor für die Replikate
+  template:
+    metadata:
+      labels:
+        app: flask-feedback-app  # Labels für die Pod-Template-Metadaten
+    spec:
+      containers:
+      - name: flask-feedback-app  # Name des Containers
+        image: docker.io/linsenchips/flask-feedback-app:latest  # Docker-Image für die Anwendung
+        ports:
+        - containerPort: 5000  # Port, auf dem der Container lauscht
+        env:
+        - name: PORT
+          value: "5000"  # Umgebungsvariable für den Port
+
+--- # Trennlinie zwischen den Deployments
+
+# Definition eines Deployments für die MongoDB-Anwendung
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo  # Name des Deployments für MongoDB
+spec:
+  replicas: 1  # Anzahl der Replikate (Pods)
+  selector:
+    matchLabels:
+      app: mongo  # Selektor für die Replikate
+  template:
+    metadata:
+      labels:
+        app: mongo  # Labels für die Pod-Template-Metadaten
+    spec:
+      containers:
+      - name: mongo  # Name des Containers
+        image: mongo:latest  # Docker-Image für die MongoDB-Anwendung
+        ports:
+        - containerPort: 27017  # Port, auf dem der MongoDB-Container lauscht
+
